@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * file license.txt for more details.
  *)
+open Common
 module J = Json_type
 module PI = Parse_info
 module E = Error_code
@@ -42,7 +43,7 @@ let lines_of_file (file: Common.filename) : string array =
   )
 
 let error_to_json checker_id err =
-   let file = err.E.loc.PI.file in
+   let file = Str.regexp "/analysis/inputs/public/source-code/\\(.*\\)" in Str.replace_first r "\\1" err.E.loc.PI.file
    let lines = lines_of_file file in
    let (startp, endp, line) = loc_to_json_range err.E.loc in
    let message = E.string_of_error_kind err.E.typ in
