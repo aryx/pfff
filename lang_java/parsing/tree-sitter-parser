@@ -1,0 +1,25 @@
+#!/bin/bash
+
+example_count=$(find $1 -name '*.java' | wc -l)
+
+echo "$example_count files found"
+
+declare -i count
+declare -i error
+
+for file in $(find $1 -name '*.java');  do
+    echo -n "" > results.txt
+    node tree-sitter-parser.js "$file" >> results.txt
+    if grep -qF "ERROR" results.txt;then
+        if grep -qF "ERROR" "$file";then
+            error+=0
+        else 
+            echo "Error found"
+            error+=1
+        fi
+    fi 
+    count+=1
+    echo "Parsed: $count/$example_count"
+done
+
+echo "Errors: $error/$example_count"
